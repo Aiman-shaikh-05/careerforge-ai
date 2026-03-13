@@ -1,0 +1,18 @@
+packages:
+  "framer-motion": "For page transitions and elegant entry animations"
+  "recharts": "For profile completion rings and data visualization"
+  "clsx": "For conditional class merging"
+  "tailwind-merge": "For merging tailwind classes safely"
+  "date-fns": "For formatting dates nicely"
+
+images:
+  - path: "artifacts/careerforge/public/images/logo.png"
+    description: "Minimal modern geometric logo for CareerForge AI, incorporating a subtle anvil and spark, soft blue and purple gradient, clean white background"
+    aspect_ratio: "1:1"
+  - path: "artifacts/careerforge/public/images/auth-bg.png"
+    description: "Abstract soft 3d shapes in pastel blues and purples, clean minimal professional background"
+    aspect_ratio: "16:9"
+
+notes:
+  - Using generated hooks from @workspace/api-client-react
+  - Token-based auth stored in localStorage

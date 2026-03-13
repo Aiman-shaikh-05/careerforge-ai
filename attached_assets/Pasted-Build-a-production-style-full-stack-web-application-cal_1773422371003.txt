@@ -1,0 +1,198 @@
+Build a production-style full-stack web application called "CareerForge AI" for students.
+
+Purpose:
+CareerForge AI is an AI-powered career copilot platform for students. It should help students with:
+- resume review
+- project suggestions
+- roadmap generation
+- skill-gap analysis
+- mock interview questions
+- job role recommendations
+
+Tech stack to use:
+- Frontend: React + Vite + TypeScript + Tailwind CSS
+- Backend: FastAPI + Python
+- Database: PostgreSQL
+- ORM: SQLAlchemy
+- Authentication: JWT-based auth
+- API communication: REST API
+- State management: React Context or lightweight clean pattern
+- Form validation: good frontend and backend validation
+- File upload: resume upload support
+- Code should be structured so I can later move file storage to AWS S3 and deploy on AWS
+
+Important:
+I want this to be production-style, clean, modular, scalable, and beginner-maintainable.
+Do not build a toy project.
+Do not generate random messy code.
+Use clear folder structure, reusable components, proper API separation, environment variables, and professional naming.
+
+Build the project with these modules:
+
+1. Authentication
+- Student signup
+- Student login
+- JWT authentication
+- Password hashing
+- Protected routes
+- Logout support
+
+2. Student Profile
+- Full name
+- Email
+- College
+- Branch
+- Year
+- Skills
+- Interests
+- Target role
+- Bio
+- Profile update page
+
+3. Dashboard
+- Welcome card
+- Profile completion percentage
+- Recent recommendations
+- Career progress summary
+- Quick action cards
+- Clean and modern UI
+
+4. Resume Upload and Analysis
+- Allow PDF resume upload
+- Store file metadata
+- Extract text placeholder service
+- Build backend service layer for resume analysis
+- For now use mock AI analysis response if API key is missing
+- Return:
+  - resume summary
+  - strengths
+  - missing skills
+  - improvement suggestions
+  - ATS-style score placeholder
+
+5. Project Recommendation Module
+- Based on skills, interests, and target role
+- Recommend personalized projects
+- Each project should have:
+  - title
+  - description
+  - difficulty
+  - domain
+  - recommended tech stack
+  - why it matches the student
+
+6. Roadmap Generator
+- Based on target role and current skills
+- Return step-by-step learning roadmap
+- Include beginner/intermediate/advanced milestones
+- Clean UI timeline or card layout
+
+7. Job Role Recommendation
+- Recommend roles such as:
+  - AI Engineer
+  - ML Engineer
+  - Data Analyst
+  - Backend Developer
+  - Cloud Engineer
+- Use profile + skills as input
+
+8. Mock Interview Module
+- Generate interview questions based on target role
+- Categories:
+  - technical
+  - HR
+  - project-based
+- Show questions in a clean UI
+- Backend should be extensible for future AI evaluation
+
+Use good production practices:
+- backend routes separated by module
+- schemas and models separated
+- service layer for business logic
+- config file for settings
+- .env file support
+- CORS setup
+- API error handling
+- loading states on frontend
+- empty states
+- clean reusable React components
+- responsive UI
+- form validation
+- proper comments only where useful
+- no unnecessary comments
+- no hardcoded secrets
+- README with setup instructions
+
+Database design:
+Create proper tables/models for:
+- users
+- student_profiles
+- resumes
+- resume_feedback
+- recommended_projects
+- roadmaps
+- role_recommendations
+- mock_interview_sessions
+
+Backend structure example:
+backend/
+  app/
+    api/
+    core/
+    db/
+    models/
+    schemas/
+    services/
+    utils/
+  main.py
+
+Frontend structure example:
+frontend/
+  src/
+    components/
+    pages/
+    layouts/
+    services/
+    hooks/
+    context/
+    types/
+    utils/
+
+UI requirements:
+- modern, clean, minimal dashboard
+- professional student-focused branding
+- soft colors
+- user-friendly layout
+- mobile responsive
+- no clutter
+- should look like a real startup MVP
+
+Implementation rules:
+- First generate the folder structure
+- Then generate backend FastAPI app with modular routes
+- Then generate database models and Pydantic schemas
+- Then generate auth
+- Then generate frontend pages and API integration
+- Then connect all modules
+- Then add mock AI response layer
+- Then add README
+
+Very important:
+- If some AI features cannot be fully completed, create them with clean mock service functions and TODO-ready architecture
+- Keep the code easy to continue in VS Code
+- Avoid overengineering
+- Avoid unnecessary third-party dependencies
+- Make the app runnable locally
+- Make sure frontend and backend connect correctly
+- Provide sample seed data where useful
+
+Deliverables:
+- full backend code
+- full frontend code
+- database schema
+- environment variable examples
+- README
+- clear run instructions
+- clean production-style starter implementation
+
+Do not stop with only a plan. Generate the actual code structure and implementation.

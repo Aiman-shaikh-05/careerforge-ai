@@ -1,22 +1,35 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: CareerForge AI API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: profile
+    description: Student profile operations
+  - name: resume
+    description: Resume upload and analysis
+  - name: projects
+    description: Project recommendations
+  - name: roadmap
+    description: Career roadmap generation
+  - name: jobs
+    description: Job role recommendations
+  - name: interview
+    description: Mock interview questions
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,7 +37,381 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      tags: [auth]
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      summary: Get student profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Student profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentProfile"
+        "404":
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateProfile
+      tags: [profile]
+      summary: Update student profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileRequest"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentProfile"
+
+  /resume:
+    get:
+      operationId: getResumes
+      tags: [resume]
+      summary: Get user resumes
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of resumes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Resume"
+    post:
+      operationId: uploadResume
+      tags: [resume]
+      summary: Upload a resume
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        "201":
+          description: Resume uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resume"
+
+  /resume/{resumeId}/analyze:
+    post:
+      operationId: analyzeResume
+      tags: [resume]
+      summary: Analyze a resume
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: resumeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Resume analysis
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResumeFeedback"
+
+  /resume/{resumeId}/feedback:
+    get:
+      operationId: getResumeFeedback
+      tags: [resume]
+      summary: Get latest feedback for a resume
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: resumeId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Resume feedback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResumeFeedback"
+        "404":
+          description: No feedback found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /projects/recommend:
+    post:
+      operationId: getProjectRecommendations
+      tags: [projects]
+      summary: Get personalized project recommendations
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecommendProjectsRequest"
+      responses:
+        "200":
+          description: Project recommendations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProjectRecommendation"
+
+  /projects/saved:
+    get:
+      operationId: getSavedProjects
+      tags: [projects]
+      summary: Get saved project recommendations
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Saved projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProjectRecommendation"
+
+  /roadmap/generate:
+    post:
+      operationId: generateRoadmap
+      tags: [roadmap]
+      summary: Generate a career roadmap
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateRoadmapRequest"
+      responses:
+        "200":
+          description: Generated roadmap
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Roadmap"
+
+  /roadmap/latest:
+    get:
+      operationId: getLatestRoadmap
+      tags: [roadmap]
+      summary: Get the latest roadmap for current user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Latest roadmap
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Roadmap"
+        "404":
+          description: No roadmap found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /jobs/recommend:
+    post:
+      operationId: getJobRecommendations
+      tags: [jobs]
+      summary: Get job role recommendations
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecommendJobsRequest"
+      responses:
+        "200":
+          description: Job recommendations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobRecommendation"
+
+  /jobs/saved:
+    get:
+      operationId: getSavedJobs
+      tags: [jobs]
+      summary: Get saved job recommendations
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Saved jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobRecommendation"
+
+  /interview/generate:
+    post:
+      operationId: generateInterviewQuestions
+      tags: [interview]
+      summary: Generate mock interview questions
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateInterviewRequest"
+      responses:
+        "200":
+          description: Interview questions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InterviewSession"
+
+  /interview/sessions:
+    get:
+      operationId: getInterviewSessions
+      tags: [interview]
+      summary: Get interview sessions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of interview sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InterviewSession"
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     HealthStatus:
       type: object
@@ -34,3 +421,453 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+        - message
+
+    RegisterRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 2
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+      required:
+        - fullName
+        - email
+        - password
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        email:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - fullName
+        - email
+        - createdAt
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+      required:
+        - token
+        - user
+
+    StudentProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        fullName:
+          type: string
+        email:
+          type: string
+        college:
+          type: string
+          nullable: true
+        branch:
+          type: string
+          nullable: true
+        year:
+          type: string
+          nullable: true
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        targetRole:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+        completionPercentage:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - fullName
+        - email
+        - skills
+        - interests
+        - completionPercentage
+        - updatedAt
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        college:
+          type: string
+          nullable: true
+        branch:
+          type: string
+          nullable: true
+        year:
+          type: string
+          nullable: true
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        targetRole:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+
+    Resume:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        fileName:
+          type: string
+        fileSize:
+          type: integer
+        uploadedAt:
+          type: string
+          format: date-time
+        analysisStatus:
+          type: string
+          enum: [pending, processing, completed, failed]
+      required:
+        - id
+        - userId
+        - fileName
+        - fileSize
+        - uploadedAt
+        - analysisStatus
+
+    ResumeFeedback:
+      type: object
+      properties:
+        id:
+          type: integer
+        resumeId:
+          type: integer
+        summary:
+          type: string
+        strengths:
+          type: array
+          items:
+            type: string
+        missingSkills:
+          type: array
+          items:
+            type: string
+        improvements:
+          type: array
+          items:
+            type: string
+        atsScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - resumeId
+        - summary
+        - strengths
+        - missingSkills
+        - improvements
+        - atsScore
+        - createdAt
+
+    RecommendProjectsRequest:
+      type: object
+      properties:
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        targetRole:
+          type: string
+        count:
+          type: integer
+          default: 6
+      required:
+        - skills
+        - interests
+        - targetRole
+
+    ProjectRecommendation:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        domain:
+          type: string
+        techStack:
+          type: array
+          items:
+            type: string
+        whyItMatches:
+          type: string
+        estimatedHours:
+          type: integer
+      required:
+        - id
+        - title
+        - description
+        - difficulty
+        - domain
+        - techStack
+        - whyItMatches
+        - estimatedHours
+
+    GenerateRoadmapRequest:
+      type: object
+      properties:
+        targetRole:
+          type: string
+        currentSkills:
+          type: array
+          items:
+            type: string
+        experienceLevel:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          default: beginner
+      required:
+        - targetRole
+        - currentSkills
+
+    RoadmapMilestone:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        topics:
+          type: array
+          items:
+            type: string
+        resources:
+          type: array
+          items:
+            type: string
+        estimatedWeeks:
+          type: integer
+        order:
+          type: integer
+      required:
+        - id
+        - title
+        - description
+        - level
+        - topics
+        - resources
+        - estimatedWeeks
+        - order
+
+    Roadmap:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        targetRole:
+          type: string
+        milestones:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoadmapMilestone"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - targetRole
+        - milestones
+        - createdAt
+
+    RecommendJobsRequest:
+      type: object
+      properties:
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        targetRole:
+          type: string
+          nullable: true
+      required:
+        - skills
+        - interests
+
+    JobRecommendation:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        requiredSkills:
+          type: array
+          items:
+            type: string
+        matchPercentage:
+          type: integer
+          minimum: 0
+          maximum: 100
+        salaryRange:
+          type: string
+        growthOutlook:
+          type: string
+          enum: [high, medium, low]
+        whyItMatches:
+          type: string
+        domain:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - requiredSkills
+        - matchPercentage
+        - salaryRange
+        - growthOutlook
+        - whyItMatches
+        - domain
+
+    GenerateInterviewRequest:
+      type: object
+      properties:
+        targetRole:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        questionCount:
+          type: integer
+          default: 10
+      required:
+        - targetRole
+        - skills
+
+    InterviewQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+        question:
+          type: string
+        category:
+          type: string
+          enum: [technical, hr, project_based]
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+        hint:
+          type: string
+          nullable: true
+      required:
+        - id
+        - question
+        - category
+        - difficulty
+
+    InterviewSession:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        targetRole:
+          type: string
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/InterviewQuestion"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - targetRole
+        - questions
+        - createdAt
