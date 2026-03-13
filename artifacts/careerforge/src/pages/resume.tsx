@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { useAuthHeaders } from "@/lib/utils";
 import { useGetResumes, useUploadResume, useAnalyzeResume, useGetResumeFeedback } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { FileUp, File, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { FileUp, File, FileText, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function ResumePage() {
   const headers = useAuthHeaders();
