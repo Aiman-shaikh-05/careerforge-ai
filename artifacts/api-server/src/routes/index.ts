@@ -1,12 +1,12 @@
 import { Router, type IRouter } from "express";
-import healthRouter from "./health.js";
-import authRouter from "./auth.js";
-import profileRouter from "./profile.js";
-import resumeRouter from "./resume.js";
-import projectsRouter from "./projects.js";
-import roadmapRouter from "./roadmap.js";
-import jobsRouter from "./jobs.js";
-import interviewRouter from "./interview.js";
+import healthRouter from "./health";
+import authRouter from "./auth";
+import profileRouter from "./profile";
+import resumeRouter from "./resume";
+import projectsRouter from "./projects";
+import roadmapRouter from "./roadmap";
+import jobsRouter from "./jobs";
+import interviewRouter from "./interview";
 
 const router: IRouter = Router();
 

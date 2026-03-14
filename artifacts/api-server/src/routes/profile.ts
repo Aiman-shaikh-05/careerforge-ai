@@ -3,7 +3,7 @@ import { db } from "@workspace/db";
 import { studentProfilesTable, usersTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
 import { UpdateProfileBody } from "@workspace/api-zod";
-import { requireAuth, AuthenticatedRequest } from "../lib/auth.js";
+import { requireAuth, AuthenticatedRequest } from "../lib/auth";
 
 const router = Router();
 

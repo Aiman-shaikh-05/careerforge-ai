@@ -19,7 +19,10 @@ export default function ResumePage() {
   const [selectedResumeId, setSelectedResumeId] = useState<number | null>(null);
   const { data: feedback, isLoading: isLoadingFeedback } = useGetResumeFeedback(selectedResumeId || 0, {
     ...headers,
-    query: { enabled: !!selectedResumeId }
+    query: { 
+      enabled: !!selectedResumeId,
+      queryKey: ["/api/resume", selectedResumeId]
+    }
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -69,7 +69,7 @@ router.post("/", requireAuth, upload.single("file"), async (req: AuthenticatedRe
 
 router.post("/:resumeId/analyze", requireAuth, async (req: AuthenticatedRequest, res) => {
   const userId = req.user!.userId;
-  const resumeId = parseInt(req.params.resumeId);
+  const resumeId = parseInt(req.params.resumeId as string);
 
   const [resume] = await db.select().from(resumesTable)
     .where(and(eq(resumesTable.id, resumeId), eq(resumesTable.userId, userId))).limit(1);
@@ -108,7 +108,7 @@ router.post("/:resumeId/analyze", requireAuth, async (req: AuthenticatedRequest,
 
 router.get("/:resumeId/feedback", requireAuth, async (req: AuthenticatedRequest, res) => {
   const userId = req.user!.userId;
-  const resumeId = parseInt(req.params.resumeId);
+  const resumeId = parseInt(req.params.resumeId as string);
 
   const [resume] = await db.select().from(resumesTable)
     .where(and(eq(resumesTable.id, resumeId), eq(resumesTable.userId, userId))).limit(1);

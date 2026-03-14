@@ -297,9 +297,18 @@ export async function customFetch<T = unknown>(
     headers.set("accept", DEFAULT_JSON_ACCEPT);
   }
 
-  const requestInfo = { method, url: resolveUrl(input) };
+  // Handle base URL for frontend development
+  let url = resolveUrl(input);
+  if (typeof input === "string" && !input.startsWith("http")) {
+    const baseUrl = typeof window !== "undefined" 
+      ? (window as any).VITE_API_URL || "http://localhost:3000"
+      : "http://localhost:3000";
+    url = `${baseUrl}${url}`;
+  }
 
-  const response = await fetch(input, { ...init, method, headers });
+  const requestInfo = { method, url };
+
+  const response = await fetch(url, { ...init, method, headers });
 
   if (!response.ok) {
     const errorData = await parseErrorBody(response, method);
