@@ -301,8 +301,8 @@ export async function customFetch<T = unknown>(
   let url = resolveUrl(input);
   if (typeof input === "string" && !input.startsWith("http")) {
     const baseUrl = typeof window !== "undefined" 
-      ? (window as any).VITE_API_URL || "http://localhost:3000"
-      : "http://localhost:3000";
+      ? (window as any).VITE_API_URL || "https://careerforge-ai-1-3neo.onrender.com"
+      : "https://careerforge-ai-1-3neo.onrender.com";
     url = `${baseUrl}${url}`;
   }
 
