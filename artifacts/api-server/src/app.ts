@@ -13,6 +13,10 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/", (_req, res) => {
+  res.send("CareerForge API is running successfully");
+});
+
 app.use("/api", router);
 
-export default app; 
+export default app;
