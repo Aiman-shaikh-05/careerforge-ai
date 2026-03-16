@@ -19,9 +19,11 @@ router.post("/register", async (req, res) => {
   // Ensure email is properly formatted
   const cleanEmail = email.trim().toLowerCase();
 
-  // Use sql template literal to ensure exact parameter binding without any tuple/array conversion
-  const existing = await db.select().from(usersTable).where(sql`${usersTable.email} = ${cleanEmail}`).limit(1);
-  if (existing.length > 0) {
+  // Use raw SQL to ensure exact parameter binding without any tuple/array conversion
+  const existing = await db.execute(
+    sql`SELECT id FROM users WHERE email = ${cleanEmail} LIMIT 1`
+  );
+  if (existing.rows && existing.rows.length > 0) {
     res.status(409).json({ error: "conflict", message: "Email already registered" });
     return;
   }
