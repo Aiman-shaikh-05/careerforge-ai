@@ -16,14 +16,17 @@ router.post("/register", async (req, res) => {
   }
   const { fullName, email, password } = parsed.data;
 
-  const existing = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
+  // Ensure email is properly formatted
+  const cleanEmail = email.trim().toLowerCase();
+
+  const existing = await db.select().from(usersTable).where(eq(usersTable.email, cleanEmail)).limit(1);
   if (existing.length > 0) {
     res.status(409).json({ error: "conflict", message: "Email already registered" });
     return;
   }
 
   const passwordHash = await bcrypt.hash(password, 12);
-  const [user] = await db.insert(usersTable).values({ fullName, email, passwordHash }).returning();
+  const [user] = await db.insert(usersTable).values({ fullName, email: cleanEmail, passwordHash }).returning();
 
   await db.insert(studentProfilesTable).values({
     userId: user.id,

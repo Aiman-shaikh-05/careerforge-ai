@@ -163,6 +163,12 @@ importers:
       '@tailwindcss/oxide-win32-x64-msvc':
         specifier: ^4.2.1
         version: 4.2.1
+      drizzle-kit:
+        specifier: ^0.31.9
+        version: 0.31.9
+      drizzle-orm:
+        specifier: 0.45.1
+        version: 0.45.1(@types/pg@8.18.0)(pg@8.20.0)
       lightningcss-win32-x64-msvc:
         specifier: ^1.32.0
         version: 1.32.0

@@ -12,6 +12,8 @@
   "devDependencies": {
     "@rollup/rollup-win32-x64-msvc": "^4.59.0",
     "@tailwindcss/oxide-win32-x64-msvc": "^4.2.1",
+    "drizzle-kit": "^0.31.9",
+    "drizzle-orm": "0.45.1",
     "lightningcss-win32-x64-msvc": "^1.32.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2"
