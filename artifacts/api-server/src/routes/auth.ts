@@ -2,7 +2,7 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { db } from "@workspace/db";
 import { usersTable, studentProfilesTable } from "@workspace/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { RegisterBody, LoginBody } from "@workspace/api-zod";
 import { signToken, requireAuth, AuthenticatedRequest } from "../lib/auth.js";
 
@@ -19,7 +19,8 @@ router.post("/register", async (req, res) => {
   // Ensure email is properly formatted
   const cleanEmail = email.trim().toLowerCase();
 
-  const existing = await db.select().from(usersTable).where(eq(usersTable.email, cleanEmail)).limit(1);
+  // Use sql template literal to ensure exact parameter binding without any tuple/array conversion
+  const existing = await db.select().from(usersTable).where(sql`${usersTable.email} = ${cleanEmail}`).limit(1);
   if (existing.length > 0) {
     res.status(409).json({ error: "conflict", message: "Email already registered" });
     return;
