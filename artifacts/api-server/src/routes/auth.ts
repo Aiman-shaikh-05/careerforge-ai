@@ -20,12 +20,12 @@ router.post("/register", async (req, res) => {
   const cleanEmail = email.trim().toLowerCase();
 
   // Use raw SQL to ensure exact parameter binding without any tuple/array conversion
-  const existing = await db.execute(
+  const existingUser = await db.execute(
     sql`SELECT id FROM users WHERE email = ${cleanEmail} LIMIT 1`
   );
-  if (existing.rows && existing.rows.length > 0) {
-    res.status(409).json({ error: "conflict", message: "Email already registered" });
-    return;
+
+  if (existingUser.rows.length > 0) {
+    return res.status(409).json({ message: "User already exists" });
   }
 
   const passwordHash = await bcrypt.hash(password, 12);
